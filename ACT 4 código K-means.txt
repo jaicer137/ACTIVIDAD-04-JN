@@ -1,0 +1,54 @@
+import pandas as pd
+import numpy as np
+
+# Crear datos ficticios
+np.random.seed(42)
+
+estaciones = ["A", "B", "C", "D", "E"]
+horas = np.random.randint(0, 24, 200)  # Horarios aleatorios
+volumen_pasajeros = np.random.randint(10, 300, 200)  # Número de pasajeros
+tiempos_viaje = np.random.randint(5, 60, 200)  # Tiempos de viaje en minutos
+
+# Dataset
+datos = {
+    "Origen": np.random.choice(estaciones, 200),
+    "Destino": np.random.choice(estaciones, 200),
+    "Hora": horas,
+    "Volumen_Pasajeros": volumen_pasajeros,
+    "Tiempo_Viaje": tiempos_viaje,
+}
+
+# Convertir a DataFrame
+df = pd.DataFrame(datos)
+
+# Eliminar rutas donde Origen y Destino sean iguales
+df = df[df["Origen"] != df["Destino"]]
+
+# Mostrar una parte del dataset
+print(df.head())
+
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+
+# Seleccionar las columnas relevantes
+X = df[["Hora", "Volumen_Pasajeros", "Tiempo_Viaje"]]
+
+# Escalar los datos para que estén en la misma escala
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Aplicar K-Means con 3 clústeres
+kmeans = KMeans(n_clusters=3, random_state=42)
+clusters = kmeans.fit_predict(X_scaled)
+
+# Añadir los clústeres al dataset original
+df["Cluster"] = clusters
+
+# Visualización de los resultados
+plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=clusters, cmap="viridis", s=50)
+plt.title("Clústeres de viajes")
+plt.xlabel("Hora (escalada)")
+plt.ylabel("Volumen de Pasajeros (escalado)")
+plt.colorbar(label="Cluster")
+plt.show()

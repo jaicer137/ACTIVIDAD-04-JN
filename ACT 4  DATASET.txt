@@ -1,0 +1,30 @@
+//Dataset//
+
+import pandas as pd
+import numpy as np
+
+# Crear datos ficticios
+np.random.seed(42)
+
+estaciones = ["A", "B", "C", "D", "E"]
+horas = np.random.randint(0, 24, 200)  # Horarios aleatorios
+volumen_pasajeros = np.random.randint(10, 300, 200)  # Número de pasajeros
+tiempos_viaje = np.random.randint(5, 60, 200)  # Tiempos de viaje en minutos
+
+# Dataset
+datos = {
+    "Origen": np.random.choice(estaciones, 200),
+    "Destino": np.random.choice(estaciones, 200),
+    "Hora": horas,
+    "Volumen_Pasajeros": volumen_pasajeros,
+    "Tiempo_Viaje": tiempos_viaje,
+}
+
+# Convertir a DataFrame
+df = pd.DataFrame(datos)
+
+# Eliminar rutas donde Origen y Destino sean iguales
+df = df[df["Origen"] != df["Destino"]]
+
+# Mostrar una parte del dataset
+print(df.head())
